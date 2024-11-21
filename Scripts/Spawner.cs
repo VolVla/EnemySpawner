@@ -4,48 +4,39 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private GameObject _enemyUnit;
-    [SerializeField] private List<GameObject> _spawnPoint = new List<GameObject>();
-    [SerializeField] private float _coolDown = 2f;
-    [SerializeField] private bool _isActiveSpawner = true;
-    [SerializeField] private bool _forward = false;
-    [SerializeField] private bool _back = false;
-    [SerializeField] private bool _left = false;
-    [SerializeField] private bool _right = false;
+    [SerializeField] private Enemy _enemyUnit;
+    [SerializeField] private List<GameObject> _spawnPoint= new List<GameObject>();
+    [SerializeField] private float _coolDown= 2f;
+    [SerializeField] private bool _isActiveSpawner= true;
     private Vector3 _pointDirection;
+    private List<Vector3> _direction= new List<Vector3>()
+    {
+            Vector3.forward,
+            Vector3.right,
+            Vector3.back,
+            Vector3.left
+    };
+    private int _randomDirection; 
 
     private void Start()
     {
         StartCoroutine(Create());
     }
 
-    public void CreateEnemy()
+    private void CreateEnemy()
     {
         int valueSpawnPointCount = _spawnPoint.Count;
         System.Random random = new System.Random();
         int numberPointSpawn = random.Next(valueSpawnPointCount);
         SetDirectionEnemy();
-        Instantiate(_enemyUnit, _spawnPoint[numberPointSpawn].transform.position, Quaternion.identity).GetComponent<Enemy>().SetDirection(_pointDirection);
+        Instantiate(_enemyUnit, _spawnPoint[numberPointSpawn].transform.position, Quaternion.identity).SetDirection(_pointDirection);
     }
 
-    public void SetDirectionEnemy()
+    private void SetDirectionEnemy()
     {
-        if (_forward == true & _right == false & _back == false & _left == false)
-        {
-            _pointDirection = Vector3.forward;
-        }
-        else if(_forward == false & _right == true & _back == false & _left == false)
-        {
-            _pointDirection = Vector3.right;
-        }
-        else if(_forward == false & _right == false & _back == true & _left == false) 
-        {
-            _pointDirection = Vector3.back;
-        }
-        else if(_forward == false & _right == false & _back == false & _left == true)
-        {
-            _pointDirection = Vector3.left;
-        }
+        int minimumNumberList = 0;
+        _randomDirection= Random.Range(minimumNumberList, _direction.Count);
+        _pointDirection = _direction[_randomDirection];
     }
 
     private IEnumerator Create()
